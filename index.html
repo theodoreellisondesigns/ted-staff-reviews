@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +59,6 @@
   <div id="root"></div>
 
   <script>
-    // Decide whether to show setup or boot the app. Runs before the babel script.
     window.__TED_READY__ = false;
     function saveGasUrl() {
       var url = document.getElementById('gas-url').value.trim();
@@ -92,50 +92,96 @@ const KEYS = { emps: "ted-rev-emps", revs: "ted-rev-revs", sched: "ted-rev-sched
 // Stored in shared storage so it's editable by the owner and used for all reviews.
 
 const DEFAULT_FORM_DEF = {
+  // Rating scale used across all rated questions
+  ratingScale: [
+    { n: 1, label: "Unsatisfactory",      description: "Frequently misses the mark; requires constant supervision or corrective action." },
+    { n: 2, label: "Developing",          description: "Inconsistent; meets standards sometimes, but needs coaching to achieve stability." },
+    { n: 3, label: "Meets Expectations",  description: "Reliable, autonomous, and does exactly what the role requires." },
+    { n: 4, label: "Exceeds Expectations",description: "Proactive; goes beyond the basic brief, anticipates needs, and uplifts others." },
+    { n: 5, label: "Outstanding",         description: "A role model; consistently drives shop-wide improvement and sets the gold standard." },
+  ],
   sections: [
     {
-      id: "efficiency", title: "Efficiency & Output",
+      id: "conduct", title: "General Conduct",
       description: "Reviewer completes this section", color: "#2A7A6E", bg: "#E1F5EE",
       questions: [
-        { id: "e1", num: 1, type: "rating", selfAssess: true,  text: "How consistently does this employee meet project deadlines and timelines?", scaleMin: "Rarely meets deadlines", scaleMax: "Always delivers on time" },
-        { id: "e2", num: 2, type: "rating", selfAssess: true,  text: "How effectively does this employee manage their time and prioritise tasks under pressure?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "e3", num: 3, type: "rating", selfAssess: false, text: "Does the employee complete work within scope without requiring excessive revisions or supervision?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "e4", num: 4, type: "text",   selfAssess: false, text: "Notes on efficiency — specific examples of strong or weak performance:", placeholder: "Optional comments and examples…" },
+        { id: "c1", num: 1, type: "rating", selfAssess: true,
+          title: "Workplace Fit",
+          text: "Is generally well-liked by their colleagues while avoiding interpersonal conflict and keeping personal issues reasonably separate from their work.",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "c2", num: 2, type: "rating", selfAssess: true,
+          title: "Professionalism",
+          text: "Presents themselves professionally each day, dressing in appropriate attire while showing the ability to adapt their behavior to suit the situation (e.g. minimizing loud conversations when clients are visiting or during tight deadlines).",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "c3", num: 3, type: "rating", selfAssess: true,
+          title: "Collaboration & Communication",
+          text: "Capable of working proactively with their colleagues. They offer helpful feedback or instruction where appropriate, are able to receive constructive criticism from others, and effective in asking questions or offering suggestions in a timely manner without disrupting workflow.",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "c4", num: 4, type: "rating", selfAssess: true,
+          title: "Autonomy",
+          text: "Can be trusted to effectively and efficiently work independently with minimal supervision.",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "c5", num: 5, type: "text", selfAssess: false,
+          title: "Observations & Notes",
+          text: "Share specific examples of how this employee impacted team dynamics or workplace professionalism this period, and any general comments or concerns you may have.",
+          placeholder: "Specific examples or notes…" },
       ],
     },
     {
-      id: "quality", title: "Quality of Work",
-      description: "Reviewer completes this section", color: "#1B2838", bg: "#E8EDF2",
-      questions: [
-        { id: "q5",  num: 5, type: "rating", selfAssess: true,  text: "How would you rate the overall quality of this employee's fabrication output?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "q6",  num: 6, type: "rating", selfAssess: false, text: "Does the employee demonstrate a strong understanding of TED fabrication principals, design principles, and quality technical execution skills?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "q7",  num: 7, type: "rating", selfAssess: true,  text: "How well does the employee incorporate feedback and iterate toward the best possible outcome?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "q8",  num: 8, type: "rating", selfAssess: true,  text: "Does this employee show the ability to work autonomously when required?", scaleMin: "Relies heavily on constant feedback", scaleMax: "Capable of working independently" },
-        { id: "q9",  num: 9, type: "text",   selfAssess: false, text: "Notes on quality — specific examples or standout projects:", placeholder: "Optional comments and examples…" },
-      ],
-    },
-    {
-      id: "dependability", title: "Dependability & Professionalism",
+      id: "technical", title: "Technical Ability",
       description: "Reviewer completes this section", color: "#5C3D2E", bg: "#F2EBE6",
       questions: [
-        { id: "d10", num: 10, type: "rating", selfAssess: true,  text: "How reliably does the employee communicate proactively — flagging issues, potential delays, or changes early?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "d11", num: 11, type: "rating", selfAssess: true,  text: "Does the employee take ownership of their work and accountability for mistakes?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "d12", num: 12, type: "rating", selfAssess: false, text: "How well does this employee adapt when priorities shift, new constraints emerge, or scope changes mid-project?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "d13", num: 13, type: "text",   selfAssess: false, text: "Notes on dependability:", placeholder: "Optional comments…" },
+        { id: "t1", num: 6, type: "rating", selfAssess: true,
+          title: "Adherence to Shop Principles & Standards",
+          text: "Demonstrates a strong understanding of the studio's fabrication methodologies, and the technical ability to execute these standards consistently from start to finish.",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "t2", num: 7, type: "rating", selfAssess: true,
+          title: "Task Management",
+          text: "Is able to effectively multitask, prioritize certain tasks when appropriate, and communicate to their supervisor when they are at capacity.",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "t3", num: 8, type: "rating", selfAssess: true,
+          title: "Efficiency & Workflow",
+          text: "Works at the standard pace of the studio, striking an effective balance between quality and efficiency, and proactively alerts their supervisor when a process is running longer than anticipated.",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "t4", num: 9, type: "text", selfAssess: false,
+          title: "Observations & Notes",
+          text: "Highlight a specific project, piece, or deadline moment that captures their technical execution this period (strong or weak). Include concrete details or dates if possible.",
+          placeholder: "Specific project, piece, or moment…" },
       ],
     },
     {
-      id: "teamwork", title: "Teamwork & Collaboration",
+      id: "compliance", title: "Compliance & Reliability",
       description: "Reviewer completes this section", color: "#D4793A", bg: "#FAF0E6",
       questions: [
-        { id: "t14", num: 14, type: "rating", selfAssess: true,  text: "How effectively does this employee communicate with colleagues across the studio?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "t15", num: 15, type: "rating", selfAssess: true,  text: "Does this employee contribute positively to team culture — sharing knowledge, lifting others, and staying constructive under stress?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "t16", num: 16, type: "rating", selfAssess: true,  text: "How well does the employee give and receive feedback from peers?", scaleMin: "Needs significant improvement", scaleMax: "Exceptional" },
-        { id: "t17", num: 17, type: "text",   selfAssess: false, text: "Are there any team dynamics or interpersonal patterns worth noting?", placeholder: "Optional comments…" },
+        { id: "r1", num: 10, type: "rating", selfAssess: true,
+          title: "Shop Safety & Cleanliness",
+          text: "Consistently maintains a clean workstation, proactively returns tools to their proper places, and complies with safety protocols.",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "r2", num: 11, type: "rating", selfAssess: true,
+          title: "Operations & Administration",
+          text: "Accurately and consistently navigates established systems (e.g. submitting accurate timecards on time, checking off tasks on project maps, and using service items properly).",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "r3", num: 12, type: "rating", selfAssess: true,
+          title: "Punctuality",
+          text: "Arrives on time for scheduled shifts, reliably communicates to the front office if they are going to be late, and submits requests for time off well in advance.",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "r4", num: 13, type: "rating", selfAssess: true,
+          title: "Workload Sustainability",
+          text: "Takes mandatory breaks/lunches in accordance with state guidelines, utilizes PTO to prevent burnout, and looks after their general well-being.",
+          scaleMin: "Unsatisfactory", scaleMax: "Outstanding" },
+        { id: "r5", num: 14, type: "text", selfAssess: false,
+          title: "Observations & Notes",
+          text: "Any notable patterns regarding scheduling, punctuality, or compliance with shop systems?",
+          placeholder: "Patterns or notes…" },
       ],
     },
   ],
-  overallOptions: ["Exceeds expectations", "Meets expectations", "Partially meets expectations", "Below expectations"],
+  overallOptions: ["Outstanding", "Exceeds Expectations", "Meets Expectations", "Developing", "Unsatisfactory"],
+  closingPrompt: {
+    title: "Studio Support & Growth",
+    text: "What can the leadership team or studio do to better leverage this employee's strengths, address their weaknesses, or support their professional growth and well-being?",
+    placeholder: "Specific ways the studio can help…",
+  },
 };
 
 const REVIEW_TYPES = ["Quarterly", "Mid-Year", "Annual", "90-Day", "Probationary", "Check-In"];
@@ -166,6 +212,198 @@ const INC_SEVERITY = [
 const uid = () => Math.random().toString(36).slice(2, 9);
 const todayStr = () => new Date().toISOString().split("T")[0];
 const daysUntil = (d) => Math.round((new Date(d + "T12:00:00") - new Date()) / 86400000);
+// Build a self-contained HTML document for printing a review
+function buildPrintableHTML(r, emp) {
+  const fd = r.formSnapshot || {};
+  const ratingLabels = ["", "Unsatisfactory", "Developing", "Meets Expectations", "Exceeds Expectations", "Outstanding"];
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (m) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+
+  let body = "";
+
+  // Header
+  body += `
+    <header class="doc-header">
+      <div class="brand">
+        <div class="brand-name">Theodore Ellison Designs</div>
+        <div class="brand-sub">Employee Performance Review</div>
+      </div>
+      <div class="meta-table">
+        <div><span class="meta-label">Employee</span><span class="meta-value">${esc(emp?.name || "")}</span></div>
+        ${emp?.role ? `<div><span class="meta-label">Role</span><span class="meta-value">${esc(emp.role)}</span></div>` : ""}
+        <div><span class="meta-label">Review type</span><span class="meta-value">${esc(r.type || "")}</span></div>
+        <div><span class="meta-label">Review date</span><span class="meta-value">${esc(fmtDate(r.date))}</span></div>
+        ${r.reviewPeriod ? `<div><span class="meta-label">Period</span><span class="meta-value">${esc(r.reviewPeriod)}</span></div>` : ""}
+        ${r.reviewer ? `<div><span class="meta-label">Reviewer</span><span class="meta-value">${esc(r.reviewer)}</span></div>` : ""}
+      </div>
+    </header>
+  `;
+
+  // Sections
+  if (r.responses && fd.sections) {
+    fd.sections.forEach((sec) => {
+      body += `<section class="sec" style="border-left-color:${sec.color}">`;
+      body += `<h2 class="sec-title" style="color:${sec.color}">${esc(sec.title)}</h2>`;
+
+      sec.questions.forEach((q) => {
+        const val = r.responses[q.id];
+        if (val === undefined || val === "" || val === 0) return;
+        body += `<div class="q">`;
+        body += `<div class="q-head"><span class="q-num">${q.num}.</span>${esc(q.title || q.text)}</div>`;
+        if (q.title && q.text) body += `<div class="q-desc">${esc(q.text)}</div>`;
+        if (q.type === "rating") {
+          body += `<div class="q-rating"><span class="rating-num">${val}</span><span class="rating-lbl">${ratingLabels[val]}</span></div>`;
+        } else {
+          body += `<div class="q-text">${esc(val).replace(/\n/g, "<br>")}</div>`;
+        }
+        body += `</div>`;
+      });
+
+      // Staff input
+      const peers = (r.peerInputs || {})[sec.id] || [];
+      if (peers.length > 0) {
+        body += `<div class="peer-block"><div class="peer-label">Staff input</div>`;
+        peers.forEach((pi) => {
+          body += `<div class="peer-item">`;
+          body += `<div class="peer-source" style="color:${sec.color}">${esc(pi.source)}</div>`;
+          body += `<div class="peer-note">${esc(pi.note).replace(/\n/g, "<br>")}</div>`;
+          body += `</div>`;
+        });
+        body += `</div>`;
+      }
+      body += `</section>`;
+    });
+  }
+
+  // Overall
+  if (r.overallRating) {
+    body += `<section class="sec"><h2 class="sec-title">Overall Rating</h2><div class="overall">${esc(r.overallRating)}</div></section>`;
+  }
+
+  // Studio Support & Growth
+  if (r.summaryNotes) {
+    body += `<section class="sec"><h2 class="sec-title">Studio Support & Growth</h2><div class="closing">${esc(r.summaryNotes).replace(/\n/g, "<br>")}</div></section>`;
+  }
+
+  // Goals
+  if ((r.goals || []).length > 0) {
+    body += `<section class="sec"><h2 class="sec-title">Goals</h2><ul class="goals">`;
+    r.goals.forEach((g) => {
+      const marker = g.status === "complete" ? "✓" : g.status === "carried" ? "↗" : "○";
+      body += `<li><span class="goal-marker">${marker}</span> ${esc(g.text)}</li>`;
+    });
+    body += `</ul></section>`;
+  }
+
+  // Signature block
+  body += `
+    <section class="signatures">
+      <div class="sig-row">
+        <div class="sig-line">
+          <div class="sig-label">Reviewer signature</div>
+          <div class="sig-blank"></div>
+          <div class="sig-date">Date</div>
+          <div class="sig-blank-short"></div>
+        </div>
+        <div class="sig-line">
+          <div class="sig-label">Employee signature</div>
+          <div class="sig-blank"></div>
+          <div class="sig-date">Date</div>
+          <div class="sig-blank-short"></div>
+        </div>
+      </div>
+      <div class="ack">Both parties confirm this review has been discussed and received.</div>
+    </section>
+  `;
+
+  body += `<footer class="doc-footer">Theodore Ellison Designs · 1248 International Blvd, Oakland, CA 94606 · inquiry@theodoreellisondesigns.com</footer>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>${esc(emp?.name || "Review")} — ${esc(r.type || "")} Review</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: #1B2838;
+    background: #fff;
+    padding: 40px 50px;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .doc-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid #1B2838; }
+  .brand-name { font-size: 11px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.18em; color: #5C3D2E; margin-bottom: 6px; }
+  .brand-sub { font-size: 26px; font-weight: 500; color: #1B2838; letter-spacing: -0.01em; margin-bottom: 24px; }
+  .meta-table { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; font-size: 13px; }
+  .meta-table > div { display: flex; gap: 12px; align-items: baseline; padding: 4px 0; border-bottom: 0.5px dotted rgba(27,40,56,0.2); }
+  .meta-label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #6B6560; min-width: 90px; }
+  .meta-value { color: #1B2838; font-weight: 500; }
+  .sec { margin-bottom: 28px; padding-left: 16px; border-left: 3px solid #1B2838; }
+  .sec-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; color: #1B2838; }
+  .q { margin-bottom: 16px; }
+  .q-head { font-size: 13px; font-weight: 600; color: #1B2838; }
+  .q-num { color: #6B6560; font-weight: 400; margin-right: 6px; }
+  .q-desc { font-size: 12px; color: #6B6560; padding-left: 22px; margin-top: 3px; line-height: 1.55; }
+  .q-rating { margin-top: 6px; padding-left: 22px; display: flex; align-items: center; gap: 10px; }
+  .rating-num { background: #1B2838; color: #fff; font-weight: 600; font-size: 12px; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+  .rating-lbl { font-size: 13px; font-weight: 500; color: #1B2838; }
+  .q-text { margin-top: 6px; padding-left: 22px; font-size: 13px; color: #1B2838; line-height: 1.65; white-space: pre-wrap; }
+  .peer-block { margin-top: 14px; padding: 12px 14px; background: #F5F0EB; border-radius: 6px; }
+  .peer-label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: #5C3D2E; margin-bottom: 8px; }
+  .peer-item { padding: 8px 0; border-bottom: 0.5px solid rgba(27,40,56,0.1); }
+  .peer-item:last-child { border-bottom: none; }
+  .peer-source { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; margin-bottom: 3px; }
+  .peer-note { font-size: 12.5px; color: #1B2838; line-height: 1.55; }
+  .overall { font-size: 16px; font-weight: 600; color: #5C3D2E; padding: 8px 0; }
+  .closing { font-size: 13px; line-height: 1.7; color: #1B2838; white-space: pre-wrap; }
+  .goals { list-style: none; padding-left: 0; }
+  .goals li { padding: 5px 0; font-size: 13px; color: #1B2838; }
+  .goal-marker { display: inline-block; width: 18px; color: #5C3D2E; font-weight: 600; }
+  .signatures { margin-top: 48px; padding-top: 24px; border-top: 1px solid #1B2838; }
+  .sig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 16px; }
+  .sig-label { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #6B6560; margin-bottom: 24px; }
+  .sig-blank { border-bottom: 0.5px solid #1B2838; margin-bottom: 4px; height: 28px; }
+  .sig-date { font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #6B6560; margin-top: 12px; margin-bottom: 24px; }
+  .sig-blank-short { border-bottom: 0.5px solid #1B2838; width: 50%; height: 28px; }
+  .ack { font-size: 12px; color: #6B6560; font-style: italic; margin-top: 16px; }
+  .doc-footer { margin-top: 32px; padding-top: 16px; border-top: 0.5px solid rgba(27,40,56,0.2); font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #9B958F; text-align: center; }
+  @page { margin: 0.5in; size: letter; }
+  @media print { body { padding: 0; } .sec { page-break-inside: avoid; } }
+  .print-bar { position: fixed; top: 0; left: 0; right: 0; background: #1B2838; color: #FAF8F5; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 9999; font-family: 'DM Sans', sans-serif; }
+  .print-bar button { background: #D4793A; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .print-bar button.secondary { background: transparent; border: 1px solid rgba(250,248,245,0.4); margin-right: 8px; }
+  @media print { .print-bar { display: none; } body { padding-top: 0; } }
+  body.has-bar { padding-top: 80px; }
+</style>
+</head>
+<body class="has-bar">
+  <div class="print-bar">
+    <span style="font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;">Print preview</span>
+    <div>
+      <button class="secondary" onclick="window.close()">Close</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+${body}
+</body>
+</html>`;
+}
+
+function printReview(r, emp) {
+  const html = buildPrintableHTML(r, emp);
+  const w = window.open("", "_blank", "width=900,height=1100");
+  if (!w) {
+    alert("Could not open print window. Please allow pop-ups for this site, then try again.");
+    return;
+  }
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+}
+
 const fmtDate = (d) =>
   d
     ? new Date(d + "T12:00:00").toLocaleDateString("en-US", {
@@ -174,6 +412,120 @@ const fmtDate = (d) =>
         year: "numeric",
       })
     : "";
+
+// Build a plain-text version of a review for download
+function buildReviewText(r, emp) {
+  const fd = r.formSnapshot || {};
+  const lines = [];
+  const sep = "──────────────────────────────────────────────────────────";
+
+  lines.push("THEODORE ELLISON DESIGNS");
+  lines.push("Employee Performance Review");
+  lines.push(sep);
+  lines.push("");
+  lines.push("Employee:       " + (emp?.name || ""));
+  if (emp?.role) lines.push("Role:           " + emp.role);
+  lines.push("Review type:    " + (r.type || ""));
+  lines.push("Review date:    " + fmtDate(r.date));
+  if (r.reviewPeriod) lines.push("Review period:  " + r.reviewPeriod);
+  if (r.reviewer)     lines.push("Reviewer:       " + r.reviewer);
+  lines.push("");
+  lines.push(sep);
+  lines.push("");
+
+  const ratingLabels = ["", "Unsatisfactory", "Developing", "Meets Expectations", "Exceeds Expectations", "Outstanding"];
+
+  // Sections
+  if (r.responses && fd.sections) {
+    fd.sections.forEach(sec => {
+      lines.push(sec.title.toUpperCase());
+      lines.push("");
+      sec.questions.forEach(q => {
+        const val = r.responses[q.id];
+        if (val === undefined || val === "" || val === 0) return;
+        if (q.type === "rating") {
+          lines.push("  " + q.num + ". " + (q.title || q.text));
+          if (q.title && q.text) lines.push("     " + q.text);
+          lines.push("     Rating: " + val + " — " + ratingLabels[val]);
+        } else {
+          lines.push("  " + q.num + ". " + (q.title || q.text));
+          if (q.title && q.text) lines.push("     " + q.text);
+          lines.push("");
+          String(val).split("\n").forEach(ln => lines.push("     " + ln));
+        }
+        lines.push("");
+      });
+
+      // Staff input for this section
+      const peers = (r.peerInputs || {})[sec.id] || [];
+      if (peers.length > 0) {
+        lines.push("  STAFF INPUT");
+        peers.forEach(pi => {
+          lines.push("    " + pi.source + ":");
+          String(pi.note).split("\n").forEach(ln => lines.push("      " + ln));
+          lines.push("");
+        });
+      }
+      lines.push(sep);
+      lines.push("");
+    });
+  }
+
+  // Overall
+  if (r.overallRating) {
+    lines.push("OVERALL RATING");
+    lines.push("");
+    lines.push("  " + r.overallRating);
+    lines.push("");
+    lines.push(sep);
+    lines.push("");
+  }
+
+  // Studio Support & Growth / summary
+  if (r.summaryNotes) {
+    lines.push("STUDIO SUPPORT & GROWTH");
+    lines.push("");
+    String(r.summaryNotes).split("\n").forEach(ln => lines.push("  " + ln));
+    lines.push("");
+    lines.push(sep);
+    lines.push("");
+  }
+
+  // Goals
+  if ((r.goals || []).length > 0) {
+    lines.push("GOALS");
+    lines.push("");
+    r.goals.forEach(g => {
+      const marker = g.status === "complete" ? "[✓]" : g.status === "carried" ? "[↗]" : "[ ]";
+      lines.push("  " + marker + " " + g.text);
+    });
+    lines.push("");
+    lines.push(sep);
+    lines.push("");
+  }
+
+  lines.push("Theodore Ellison Designs · 1248 International Blvd, Oakland, CA 94606");
+  lines.push("inquiry@theodoreellison.com · www.theodoreellison.com");
+
+  return lines.join("\n");
+}
+
+function downloadReviewText(r, emp) {
+  const text = buildReviewText(r, emp);
+  const empName = (emp?.name || "employee").replace(/[^a-zA-Z0-9]+/g, "-");
+  const date = r.date || "";
+  const filename = "TED-Review_" + empName + "_" + date + ".txt";
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 const avgRatings = (r) => {
   if (r.responses) { // new form-driven format
     const vals = Object.values(r.responses).filter(v => typeof v === "number" && v > 0);
@@ -187,16 +539,11 @@ const avgRatings = (r) => {
   return vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : null;
 };
 
-// ── Google Sheets storage (via Apps Script API) ──────────────────────────────
-// GAS_URL is set in index.html before this script runs (window.TED_GAS_URL).
-// Reads use JSONP (bypasses CORS). Writes use no-cors POST.
-// An in-memory cache holds the latest full dataset; the app polls every 10s.
-
+// ── Google Sheets storage (via Apps Script) ──────────────────────────────────
 function getGasUrl() { try { return localStorage.getItem("ted-gas-url") || ""; } catch(e){ return ""; } }
-let _cache = {};        // key -> value, kept fresh by polling
+let _cache = {};
 let _cacheReady = false;
 
-// JSONP helper — works around CORS for GET requests
 function jsonpGet(url) {
   return new Promise((resolve, reject) => {
     const cb = "ted_cb_" + Math.random().toString(36).slice(2);
@@ -214,36 +561,25 @@ function jsonpGet(url) {
   });
 }
 
-// Pull the entire dataset and refresh the cache
 async function refreshCache() {
   const GAS_URL = getGasUrl(); if (!GAS_URL) return false;
   try {
     const res = await jsonpGet(GAS_URL);
-    if (res && res.ok && res.data) {
-      _cache = res.data;
-      _cacheReady = true;
-      return true;
-    }
+    if (res && res.ok && res.data) { _cache = res.data; _cacheReady = true; return true; }
   } catch (e) { console.error("refreshCache", e); }
   return false;
 }
 
 async function storeGet(key) {
-  // Serve from cache if we have it; otherwise fetch all once.
   if (!_cacheReady) await refreshCache();
   return (key in _cache) ? _cache[key] : null;
 }
 
 async function storeSet(key, val) {
-  _cache[key] = val; // optimistic local update
+  _cache[key] = val;
   const GAS_URL = getGasUrl(); if (!GAS_URL) return;
   try {
-    await fetch(GAS_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ key, value: val }),
-    });
+    await fetch(GAS_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ key, value: val }) });
   } catch (e) { console.error("storeSet", e); }
 }
 
@@ -567,12 +903,28 @@ const ScheduleModal = ({ emp, onClose, onSave }) => {
 };
 
 // ── Reusable rating selector for form questions ───────────────────────────────
+const RATING_LABELS = ["", "Unsatisfactory", "Developing", "Meets Expectations", "Exceeds Expectations", "Outstanding"];
+
 const QuestionRating = ({ q, value, onChange, selfValue, readOnly }) => (
-  <div style={{ marginBottom: 18 }}>
-    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 8, lineHeight: 1.5 }}>
-      <span style={{ color: "var(--color-text-secondary)", marginRight: 6 }}>{q.num}.</span>{q.text}
-    </div>
-    <div style={{ display: "flex", gap: 0, marginBottom: q.scaleMin ? 6 : 0 }}>
+  <div style={{ marginBottom: 22 }}>
+    {/* Title + description */}
+    {q.title ? (
+      <div style={{ marginBottom: 10 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", lineHeight: 1.4 }}>
+          <span style={{ color: "var(--color-text-secondary)", marginRight: 6, fontWeight: 400 }}>{q.num}.</span>{q.title}
+        </div>
+        {q.text && (
+          <div style={{ fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.6, marginTop: 4, paddingLeft: 22 }}>
+            {q.text}
+          </div>
+        )}
+      </div>
+    ) : (
+      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 8, lineHeight: 1.5 }}>
+        <span style={{ color: "var(--color-text-secondary)", marginRight: 6 }}>{q.num}.</span>{q.text}
+      </div>
+    )}
+    <div style={{ display: "flex", gap: 0, marginBottom: 0, paddingLeft: q.title ? 22 : 0 }}>
       {[1,2,3,4,5].map(n => (
         <button key={n} onClick={() => !readOnly && onChange && onChange(n === value ? 0 : n)}
           style={{ width: 52, padding: "9px 0", border: "0.5px solid var(--color-border-tertiary)", borderRight: n < 5 ? "none" : "0.5px solid var(--color-border-tertiary)", borderRadius: n === 1 ? "6px 0 0 6px" : n === 5 ? "0 6px 6px 0" : 0, background: value === n ? "var(--color-text-primary)" : "var(--color-background-secondary)", color: value === n ? "var(--color-background-primary)" : "var(--color-text-secondary)", fontSize: 15, fontWeight: value === n ? 700 : 400, cursor: readOnly ? "default" : "pointer", transition: "all .12s", fontFamily: "'DM Sans', sans-serif" }}>
@@ -581,25 +933,20 @@ const QuestionRating = ({ q, value, onChange, selfValue, readOnly }) => (
       ))}
       {value > 0 && !readOnly && (
         <span style={{ marginLeft: 12, fontSize: 12, color: "var(--color-text-secondary)", alignSelf: "center" }}>
-          {["","Below expectations","Needs development","Meets expectations","Exceeds expectations","Outstanding"][value]}
+          {RATING_LABELS[value]}
         </span>
       )}
       {readOnly && value > 0 && (
         <span style={{ marginLeft: 12, fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", alignSelf: "center" }}>
-          {value} — {["","Below expectations","Needs development","Meets expectations","Exceeds expectations","Outstanding"][value]}
+          {value} — {RATING_LABELS[value]}
         </span>
       )}
     </div>
-    {q.scaleMin && !readOnly && (
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--color-text-secondary)", paddingTop: 2 }}>
-        <span>1 = {q.scaleMin}</span><span>5 = {q.scaleMax}</span>
-      </div>
-    )}
     {/* Employee self-assessment rating (read-only comparison) */}
     {selfValue !== undefined && selfValue > 0 && (
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, padding: "6px 10px", background: "#E6F1FB", borderRadius: 6 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8, marginLeft: q.title ? 22 : 0, padding: "6px 10px", background: "#E6F1FB", borderRadius: 6 }}>
         <span style={{ fontSize: 11, color: "#185FA5", fontWeight: 600 }}>Self-assessment:</span>
-        <span style={{ fontSize: 12, color: "#185FA5" }}>{selfValue} — {["","Below expectations","Needs development","Meets expectations","Exceeds expectations","Outstanding"][selfValue]}</span>
+        <span style={{ fontSize: 12, color: "#185FA5" }}>{selfValue} — {RATING_LABELS[selfValue]}</span>
       </div>
     )}
   </div>
@@ -683,6 +1030,27 @@ const ReviewModal = ({ emp, prevReviews, onClose, onSave, formDef, employees }) 
         <div><FL mt={0}>Review period</FL><FI value={reviewPeriod} onChange={e => setReviewPeriod(e.target.value)} placeholder="e.g. Q1 2026" /></div>
       </div>
 
+      {/* Rating scale guide */}
+      {fd.ratingScale && (
+        <div style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 12, padding: "16px 20px", marginBottom: 20 }}>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "#5C3D2E", marginBottom: 10 }}>How to rate</div>
+          <p style={{ fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.6, marginBottom: 14 }}>
+            Base your scores on consistent behaviors and outcomes, rather than isolated events.
+          </p>
+          <div style={{ display: "grid", gap: 7 }}>
+            {fd.ratingScale.map(r => (
+              <div key={r.n} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 12.5, lineHeight: 1.5 }}>
+                <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "50%", background: "var(--color-background-secondary)", color: "var(--color-text-primary)", fontWeight: 600, fontSize: 12, flexShrink: 0 }}>{r.n}</span>
+                <div>
+                  <span style={{ fontWeight: 600, color: "var(--color-text-primary)" }}>{r.label}:</span>
+                  <span style={{ color: "var(--color-text-secondary)" }}> {r.description}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Sections */}
       {fd.sections.map(sec => (
         <div key={sec.id} style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-tertiary)", borderLeft: `3px solid ${sec.color}`, borderRadius: "0 12px 12px 0", marginBottom: 20, overflow: "hidden" }}>
@@ -690,15 +1058,28 @@ const ReviewModal = ({ emp, prevReviews, onClose, onSave, formDef, employees }) 
             <div style={{ fontSize: 15, fontWeight: 600, color: sec.color }}>{sec.title}</div>
             <div style={{ fontSize: 12, color: "var(--color-text-secondary)", marginTop: 2 }}>{sec.description}</div>
           </div>
-          <div style={{ padding: "18px 20px 4px" }}>
+          <div style={{ padding: "20px 20px 4px" }}>
             {sec.questions.map(q => q.type === "rating" ? (
               <QuestionRating key={q.id} q={q} value={responses[q.id] || 0} onChange={v => setResponse(q.id, v)} />
             ) : (
               <div key={q.id} style={{ marginBottom: 18 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 6, lineHeight: 1.5 }}>
-                  <span style={{ color: "var(--color-text-secondary)", marginRight: 6 }}>{q.num}.</span>{q.text}
+                {q.title ? (
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", lineHeight: 1.4 }}>
+                      <span style={{ color: "var(--color-text-secondary)", marginRight: 6, fontWeight: 400 }}>{q.num}.</span>{q.title}
+                    </div>
+                    {q.text && (
+                      <div style={{ fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.6, marginTop: 4, paddingLeft: 22 }}>{q.text}</div>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 6, lineHeight: 1.5 }}>
+                    <span style={{ color: "var(--color-text-secondary)", marginRight: 6 }}>{q.num}.</span>{q.text}
+                  </div>
+                )}
+                <div style={{ paddingLeft: q.title ? 22 : 0 }}>
+                  <FTA value={responses[q.id] || ""} onChange={e => setResponse(q.id, e.target.value)} rows={3} placeholder={q.placeholder || "Optional comments…"} />
                 </div>
-                <FTA value={responses[q.id] || ""} onChange={e => setResponse(q.id, e.target.value)} rows={3} placeholder={q.placeholder || "Optional comments…"} />
               </div>
             ))}
           </div>
@@ -769,19 +1150,28 @@ const ReviewModal = ({ emp, prevReviews, onClose, onSave, formDef, employees }) 
         </div>
       ))}
 
-      {/* Overall rating + summary */}
+      {/* Overall rating */}
       <div style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 12, padding: 20, marginBottom: 20 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 10 }}>18. Overall rating for this review period</div>
-        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 12 }}>Overall rating for this review period</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {fd.overallOptions.map(opt => (
-            <label key={opt} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, cursor: "pointer", color: "var(--color-text-primary)" }}>
+            <label key={opt} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, cursor: "pointer", color: "var(--color-text-primary)" }}>
               <input type="radio" name="overall" checked={overallRating === opt} onChange={() => setOverallRating(opt)} style={{ width: 16, height: 16 }} />
               {opt}
             </label>
           ))}
         </div>
-        <FL mt={0}>19. Reviewer's summary notes</FL>
-        <FTA value={summaryNotes} onChange={e => setSummaryNotes(e.target.value)} rows={4} placeholder="Final comments, context, or next steps…" />
+      </div>
+
+      {/* Studio Support & Growth */}
+      <div style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 12, padding: 20, marginBottom: 20 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 4 }}>
+          {fd.closingPrompt?.title || "Studio Support & Growth"}
+        </div>
+        <div style={{ fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.6, marginBottom: 10 }}>
+          {fd.closingPrompt?.text || "What can the leadership team or studio do to better leverage this employee's strengths, address their weaknesses, or support their professional growth and well-being?"}
+        </div>
+        <FTA value={summaryNotes} onChange={e => setSummaryNotes(e.target.value)} rows={5} placeholder={fd.closingPrompt?.placeholder || "Specific ways the studio can help…"} />
       </div>
 
       {/* Goals */}
@@ -1126,20 +1516,11 @@ function App() {
   const [selInc, setSelInc] = useState(null);
   const [modal, setModal] = useState(null);
 
-  // Ref tracks whether the most recent state change came from a poll (don't re-save)
   const fromPoll = React.useRef(false);
-  // Refs hold latest JSON we wrote/loaded, so we only push real changes
   const lastSaved = React.useRef({});
 
   const applyData = (data, isInitial) => {
     fromPoll.current = true;
-    const e  = data[KEYS.emps];
-    const r  = data[KEYS.revs];
-    const s  = data[KEYS.sched];
-    const i  = data[KEYS.incs];
-    const fd = data[KEYS.form];
-    // Only update state if the incoming data differs from what we last had,
-    // to avoid clobbering an in-progress local edit on every poll.
     const setIfChanged = (key, incoming, setter, fallback) => {
       const incomingStr = JSON.stringify(incoming ?? fallback);
       if (incomingStr !== lastSaved.current[key]) {
@@ -1147,25 +1528,19 @@ function App() {
         setter(incoming ?? fallback);
       }
     };
-    setIfChanged(KEYS.emps, e, setEmployees, DEFAULT_EMPLOYEES);
-    setIfChanged(KEYS.revs, r, setReviews, []);
-    setIfChanged(KEYS.sched, s, setScheduled, []);
-    setIfChanged(KEYS.incs, i, setIncidents, []);
-    if (fd) setIfChanged(KEYS.form, fd, setFormDef, DEFAULT_FORM_DEF);
+    setIfChanged(KEYS.emps, data[KEYS.emps], setEmployees, DEFAULT_EMPLOYEES);
+    setIfChanged(KEYS.revs, data[KEYS.revs], setReviews, []);
+    setIfChanged(KEYS.sched, data[KEYS.sched], setScheduled, []);
+    setIfChanged(KEYS.incs, data[KEYS.incs], setIncidents, []);
+    if (data[KEYS.form]) setIfChanged(KEYS.form, data[KEYS.form], setFormDef, DEFAULT_FORM_DEF);
     if (isInitial) setLoading(false);
-    // release the poll flag after state settles
     setTimeout(() => { fromPoll.current = false; }, 0);
   };
 
-  // Initial load
   useEffect(() => {
-    (async () => {
-      await refreshCache();
-      applyData(_cache, true);
-    })();
+    (async () => { await refreshCache(); applyData(_cache, true); })();
   }, []);
 
-  // Auto-refresh every 10 seconds
   useEffect(() => {
     const id = setInterval(async () => {
       const ok = await refreshCache();
@@ -1174,11 +1549,10 @@ function App() {
     return () => clearInterval(id);
   }, []);
 
-  // Save on user-initiated change (skip if change came from a poll)
   const saveIfUserEdit = (key, val) => {
     if (loading || fromPoll.current) return;
     const str = JSON.stringify(val);
-    if (str === lastSaved.current[key]) return; // no real change
+    if (str === lastSaved.current[key]) return;
     lastSaved.current[key] = str;
     storeSet(key, val);
   };
@@ -1345,6 +1719,27 @@ function App() {
           </div>
         )}
 
+        {/* Rating scale guide (preview only) */}
+        {!formEditMode && formDef.ratingScale && (
+          <div style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 12, padding: "16px 20px", marginBottom: 20 }}>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "#5C3D2E", marginBottom: 10 }}>How to rate</div>
+            <p style={{ fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.6, marginBottom: 14 }}>
+              Base your scores on consistent behaviors and outcomes, rather than isolated events.
+            </p>
+            <div style={{ display: "grid", gap: 7 }}>
+              {formDef.ratingScale.map(r => (
+                <div key={r.n} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 12.5, lineHeight: 1.5 }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "50%", background: "var(--color-background-secondary)", color: "var(--color-text-primary)", fontWeight: 600, fontSize: 12, flexShrink: 0 }}>{r.n}</span>
+                  <div>
+                    <span style={{ fontWeight: 600, color: "var(--color-text-primary)" }}>{r.label}:</span>
+                    <span style={{ color: "var(--color-text-secondary)" }}> {r.description}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Sections */}
         {formDef.sections.map((sec, si) => (
           <div key={sec.id} style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-tertiary)", borderLeft: `3px solid ${sec.color}`, borderRadius: "0 12px 12px 0", marginBottom: 20, overflow: "hidden" }}>
@@ -1375,10 +1770,14 @@ function App() {
                   {formEditMode && editingQ?.secId === sec.id && editingQ?.qId === q.id ? (
                     /* Inline edit form */
                     <div style={{ background: "var(--color-background-secondary)", borderRadius: 8, padding: 14, marginBottom: 12, border: "0.5px solid var(--color-border-secondary)" }}>
+                      <div style={{ marginBottom: 10 }}>
+                        <FL mt={0}>Title (short label)</FL>
+                        <FI value={q.title || ""} onChange={e => updateFormQuestion(sec.id, q.id, "title", e.target.value)} placeholder="e.g. Workplace Fit" />
+                      </div>
                       <div style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 10, marginBottom: 10 }}>
                         <div>
-                          <FL mt={0}>Question text</FL>
-                          <FTA value={q.text} onChange={e => updateFormQuestion(sec.id, q.id, "text", e.target.value)} rows={2} />
+                          <FL mt={0}>{q.type === "text" ? "Prompt" : "Description"}</FL>
+                          <FTA value={q.text} onChange={e => updateFormQuestion(sec.id, q.id, "text", e.target.value)} rows={3} />
                         </div>
                         <div>
                           <FL mt={0}>Type</FL>
@@ -1392,12 +1791,6 @@ function App() {
                           </label>
                         </div>
                       </div>
-                      {q.type === "rating" && (
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
-                          <div><FL mt={0}>Scale min label (1)</FL><FI value={q.scaleMin || ""} onChange={e => updateFormQuestion(sec.id, q.id, "scaleMin", e.target.value)} placeholder="e.g. Needs improvement" /></div>
-                          <div><FL mt={0}>Scale max label (5)</FL><FI value={q.scaleMax || ""} onChange={e => updateFormQuestion(sec.id, q.id, "scaleMax", e.target.value)} placeholder="e.g. Exceptional" /></div>
-                        </div>
-                      )}
                       {q.type === "text" && (
                         <div style={{ marginBottom: 10 }}>
                           <FL mt={0}>Placeholder text</FL>
@@ -1417,7 +1810,9 @@ function App() {
                       onMouseOut={e => e.currentTarget.style.background = "transparent"}>
                       <span style={{ fontSize: 12, color: "var(--color-text-secondary)", marginTop: 2, minWidth: 20 }}>{q.num}.</span>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 13, color: "var(--color-text-primary)", lineHeight: 1.5 }}>{q.text}</div>
+                        <div style={{ fontSize: 13, color: "var(--color-text-primary)", lineHeight: 1.5 }}>
+                          {q.title ? <><strong>{q.title}</strong>{q.text && <span style={{ color: "var(--color-text-secondary)" }}> — {q.text}</span>}</> : q.text}
+                        </div>
                         <div style={{ fontSize: 11, color: "var(--color-text-secondary)", marginTop: 2 }}>
                           {q.type === "rating" ? `Rating 1–5 · ${q.scaleMin} → ${q.scaleMax}` : "Text field"}
                           {q.selfAssess && " · ✓ Self-assessment"}
@@ -1431,10 +1826,21 @@ function App() {
                       <QuestionRating key={q.id} q={q} value={0} readOnly />
                     ) : (
                       <div key={q.id} style={{ marginBottom: 18 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 6, lineHeight: 1.5 }}>
-                          <span style={{ color: "var(--color-text-secondary)", marginRight: 6 }}>{q.num}.</span>{q.text}
-                        </div>
-                        <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 6, padding: "8px 12px", fontSize: 13, color: "var(--color-text-secondary)", fontStyle: "italic", background: "var(--color-background-secondary)" }}>
+                        {q.title ? (
+                          <div style={{ marginBottom: 8 }}>
+                            <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", lineHeight: 1.4 }}>
+                              <span style={{ color: "var(--color-text-secondary)", marginRight: 6, fontWeight: 400 }}>{q.num}.</span>{q.title}
+                            </div>
+                            {q.text && (
+                              <div style={{ fontSize: 13, color: "var(--color-text-secondary)", lineHeight: 1.6, marginTop: 4, paddingLeft: 22 }}>{q.text}</div>
+                            )}
+                          </div>
+                        ) : (
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 6, lineHeight: 1.5 }}>
+                            <span style={{ color: "var(--color-text-secondary)", marginRight: 6 }}>{q.num}.</span>{q.text}
+                          </div>
+                        )}
+                        <div style={{ marginLeft: q.title ? 22 : 0, border: "0.5px solid var(--color-border-tertiary)", borderRadius: 6, padding: "8px 12px", fontSize: 13, color: "var(--color-text-secondary)", fontStyle: "italic", background: "var(--color-background-secondary)" }}>
                           {q.placeholder || "Optional comments…"}
                         </div>
                       </div>
@@ -1987,18 +2393,29 @@ function App() {
     );
 
     return (
-      <div style={{ maxWidth: 860 }}>
-        <button onClick={() => navTo("employee", emp || selEmp)} style={{ background: "none", border: "none", color: "var(--color-text-secondary)", cursor: "pointer", fontSize: 14, marginBottom: 20, fontFamily: "'DM Sans', sans-serif", padding: 0 }}>
-          ← Back
-        </button>
+      <div className="review-detail-page" style={{ maxWidth: 860 }}>
+        <div className="no-print" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, gap: 12, flexWrap: "wrap" }}>
+          <button onClick={() => navTo("employee", emp || selEmp)} style={{ background: "none", border: "none", color: "var(--color-text-secondary)", cursor: "pointer", fontSize: 14, fontFamily: "'DM Sans', sans-serif", padding: 0 }}>
+            ← Back
+          </button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <Btn variant="secondary" onClick={() => printReview(r, emp)} style={{ fontSize: 13, padding: "7px 14px" }}>
+              Print / Save as PDF
+            </Btn>
+            <Btn variant="secondary" onClick={() => downloadReviewText(r, emp)} style={{ fontSize: 13, padding: "7px 14px" }}>
+              Download as text
+            </Btn>
+          </div>
+        </div>
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
           {emp && <Avatar name={emp.name} size={52} />}
           <div>
             <h1 style={{ ...styles.pageTitle, margin: "0 0 4px" }}>{r.type} review</h1>
             <div style={{ color: "var(--color-text-secondary)" }}>{emp?.name} · {fmtDate(r.date)}</div>
+            {r.reviewer && <div style={{ color: "var(--color-text-secondary)", fontSize: 13, marginTop: 2 }}>Reviewer: {r.reviewer}{r.reviewPeriod ? ` · Period: ${r.reviewPeriod}` : ""}</div>}
           </div>
           {avg && (
-            <div style={{ marginLeft: "auto", fontFamily: "'DM Sans', sans-serif", fontSize: 44, fontWeight: 700, color: "#D4793A" }}>
+            <div className="no-print" style={{ marginLeft: "auto", fontFamily: "'DM Sans', sans-serif", fontSize: 44, fontWeight: 700, color: "#D4793A" }}>
               {avg}<span style={{ fontSize: 14, fontWeight: 400, color: "var(--color-text-secondary)" }}> /5</span>
             </div>
           )}
@@ -2027,8 +2444,13 @@ function App() {
                       <QuestionRating key={q.id} q={q} value={val} readOnly />
                     ) : (
                       <div key={q.id} style={{ marginBottom: 16 }}>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--color-text-secondary)", marginBottom: 4 }}>{q.num}. {q.text}</div>
-                        <p style={{ fontSize: 14, lineHeight: 1.7, color: "var(--color-text-primary)", margin: 0, whiteSpace: "pre-wrap" }}>{val}</p>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: q.title ? 2 : 4 }}>
+                          <span style={{ color: "var(--color-text-secondary)", marginRight: 6, fontWeight: 400 }}>{q.num}.</span>{q.title || q.text}
+                        </div>
+                        {q.title && q.text && (
+                          <div style={{ fontSize: 12, color: "var(--color-text-secondary)", marginBottom: 6, lineHeight: 1.5, paddingLeft: 22 }}>{q.text}</div>
+                        )}
+                        <p style={{ fontSize: 14, lineHeight: 1.7, color: "var(--color-text-primary)", margin: 0, whiteSpace: "pre-wrap", paddingLeft: q.title ? 22 : 0 }}>{val}</p>
                       </div>
                     );
                   })}
@@ -2499,7 +2921,7 @@ function App() {
       </nav>
 
       {/* Main content */}
-      <main style={{ marginLeft: 190, padding: "36px 40px", flex: 1, minHeight: "100vh" }}>
+      <main className="app-content" style={{ marginLeft: 190, padding: "36px 40px", flex: 1, minHeight: "100vh" }}>
         {modal === "addEmp" ? (
           <AddEmployeeModal onClose={() => setModal(null)} onSave={handleSaveEmployee} />
         ) : modal === "schedRev" && selEmp ? (
